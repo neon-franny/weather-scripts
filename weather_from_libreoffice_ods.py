@@ -24,7 +24,7 @@ for a in range(df_len - 1):
     temp = '+' + str(df.iloc[a, 1])
     rainfall = str(df.iloc[a, 0])
     w_str = '   ' + d_date + ' ' + m_date + ': ' + city + '  ' + temp + '  ' + rainfall +'\r\n'
-    print('   ' + d_date + ' ' + m_date + ': ' + city + '  ' + temp + '  ' + rainfall +'\r\n')
+    
     with open("output.csv", "a") as file:
         file.write(w_str)
 		
