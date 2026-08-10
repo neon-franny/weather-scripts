@@ -80,12 +80,12 @@ with open("output.csv", "a") as file:
     
 #-------- Convert ODT-spreadshit to Pandas DataFrame and write CSV-file end --------
 
+#-------- Testing method for extracting precipitation state --------
 file = 'parsing_odt_src.odt'
 textdoc = load(file)
 print(textdoc)
 paragraphs = textdoc.getElementsByType(text.P)
 
-#-------- Testing method for extracting precipitation state --------
 text_content = [teletype.extractText(p) for p in paragraphs]
 chita = text_content[text_content.index('ПО ЧИТЕ:'):]
 chita_str = ", ".join(chita)
