@@ -88,7 +88,13 @@ paragraphs = textdoc.getElementsByType(text.P)
 
 text_content = [teletype.extractText(p) for p in paragraphs]
 chita = text_content[text_content.index('ПО ЧИТЕ:'):]
+wind = chita[1].split('.')
+wind_str = wind[0]
+print(wind_str)
 chita_str = ", ".join(chita)
 print(chita)
 matches = re.findall(r'\d+-\d+°', chita_str, re.IGNORECASE)
-print(matches)
+temp_chita = matches[1].rstrip('°')
+a, b = map(int, temp_chita.split('-'))
+temp_chita_average = int((a + b) / 2)
+print(temp_chita_average)
