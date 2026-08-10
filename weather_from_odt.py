@@ -10,36 +10,27 @@ import re
 #-------- Parsing days temperature from ODT-file --------
 
 file = 'parsing_odt_src.odt'
+textdoc = load(file)
 
-def read_odt_with_odfpy(file_path):
-    # Load the document
-    textdoc = load(file_path)
-    
-    
-    # Find all paragraph elements
-    paragraphs = textdoc.getElementsByType(text.P)
-    
-    # Extract text from each paragraph
-    for paragraph in paragraphs:
-        paragraph_text = teletype.extractText(paragraph)
-        matches = re.findall(r'\d+-\d+°', paragraph_text, re.IGNORECASE) # Find matches "10-15°"
-        if matches != []:
-            return matches
-        
+paragraphs = textdoc.getElementsByType(text.P)
 
-weather_temp = read_odt_with_odfpy(file)
-weather_chita = weather_temp[5].rstrip('°') # 10-15° -> 10-15
-a, b = map(int, weather_chita.split('-')) # 10-15 -> 10 15 and mapping on two variables
-weather_chita_average = int((a + b) / 2)
-
-print(weather_chita_average)
+text_content = [teletype.extractText(p) for p in paragraphs]
+chita = text_content[text_content.index('ПО ЧИТЕ:'):]
+chita_str = ", ".join(chita)
+wind = chita[1].split('.')
+wind_str = wind[0].lower()
+print(wind_str)
+matches = re.findall(r'\d+-\d+°', chita_str, re.IGNORECASE)
+temp_chita = matches[1].rstrip('°')
+a, b = map(int, temp_chita.split('-'))
+temp_chita_average = int((a + b) / 2)
+print(temp_chita_average)
 
 #-------- Parsing days temperature from ODT-file end --------
 
 
 #-------- Convert ODT-spreadshit to Pandas DataFrame and write CSV-file --------
 df = pd.read_excel('weather_src_odt.odt', engine='odf', skiprows=1, header=0)
-
 print(df.head())
 
 months = {
@@ -49,7 +40,7 @@ months = {
 }
 
 df = df.drop(columns=['Ночью'])
-new_row = pd.DataFrame([{"Осадки": "переменная облачность", "Днем": weather_chita_average, "Населенные пункты": "Чита"}])
+new_row = pd.DataFrame([{"Осадки": wind_str, "Днем": temp_chita_average, "Населенные пункты": "Чита"}])
 df = pd.concat([new_row, df], ignore_index=True)
 
 today = date.today() + timedelta(days=1)
@@ -79,22 +70,3 @@ with open("output.csv", "a") as file:
     file.write(w_str)
     
 #-------- Convert ODT-spreadshit to Pandas DataFrame and write CSV-file end --------
-
-#-------- Testing method for extracting precipitation state --------
-file = 'parsing_odt_src.odt'
-textdoc = load(file)
-print(textdoc)
-paragraphs = textdoc.getElementsByType(text.P)
-
-text_content = [teletype.extractText(p) for p in paragraphs]
-chita = text_content[text_content.index('ПО ЧИТЕ:'):]
-wind = chita[1].split('.')
-wind_str = wind[0]
-print(wind_str)
-chita_str = ", ".join(chita)
-print(chita)
-matches = re.findall(r'\d+-\d+°', chita_str, re.IGNORECASE)
-temp_chita = matches[1].rstrip('°')
-a, b = map(int, temp_chita.split('-'))
-temp_chita_average = int((a + b) / 2)
-print(temp_chita_average)
