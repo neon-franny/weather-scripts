@@ -14,7 +14,7 @@ months = {
 
 df = df.drop(columns=['Ночью'])
 today = date.today() + timedelta(days=1)
-d_date = today.strftime("%d").replace('0', '')
+d_date = f'{today.day}'
 m_date = f'{months[today.month]}'
 df_len = len(df)
 
